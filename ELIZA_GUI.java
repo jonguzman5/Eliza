@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -93,7 +92,7 @@ public class ELIZA_GUI extends JFrame{
 					inputTF.setVisible(true);
 					startBtn.setText(NEXT);
 					String QUES = QB.getNextQuestion();
-					promptLbl.setText("Session#" + seshNum + " Q" + (quesNum+1) + ". " + QUES);
+					promptLbl.setText("Session #" + seshNum + " Q" + (quesNum+1) + ". " + QUES);
 				break;
 				case NEXT: 
 					quesNum++;
@@ -120,6 +119,9 @@ public class ELIZA_GUI extends JFrame{
 					promptLbl.setText("Press \"Start Session\" to begin session " + seshNum);
 					startBtn.setText(START);
 					inputTF.setVisible(false);
+					logBtn.setVisible(false);
+					longestBtn.setVisible(false);
+					alphBtn.setVisible(false);	
 					//System.exit(0);
 				break;
 				case LOG:
@@ -132,14 +134,16 @@ public class ELIZA_GUI extends JFrame{
 				case LONGEST:
 					fileName = "myFiles/Session.txt";
 					String theContent = FL.readDelimeterFile(fileName, " ");
+					//System.out.println(theContent);
 					String[]arr = theContent.split("\n");
 					int currMax = 0;
 					String longestStr = null;
 					for(int i = 0; i < arr.length; i++){
+						System.out.println(arr[i]);
 						if(arr[i].length() > currMax){
 							currMax = arr[i].length();
 							longestStr = arr[i]; 
-							//System.out.println(longestStr);//BUG?
+							//System.out.println(longestStr);
 							promptLbl.setText(longestStr);
 						}	
 					}
@@ -150,16 +154,23 @@ public class ELIZA_GUI extends JFrame{
 					arr = theContent.split("\n");
 					currMax = 0;
 					longestStr = null;
-					String[]longestStrs = new String[arr.length];
+					String[]temp = new String[arr.length];
 					for(int i = 0; i < arr.length; i++){
 						if(arr[i].length() > currMax){
 							currMax = arr[i].length();
 							longestStr = arr[i];
+							temp[i] = arr[i];
+							//System.out.println(temp[i]);
 						}
 					}
-					for(int i = 0; i < arr.length; i++){
-						//longestStrs[nextIndex()] = longestStr;
+					logTA.setVisible(true);
+					for(int i = 0; i < temp.length; i++){
+						if(arr[i] != null){
+							logTA.append(temp[i]);
+							logTA.append(" ");
+						}
 					}
+					
 				break;
 			}
 		}
