@@ -48,6 +48,8 @@ public class ELIZA_GUI extends JFrame{
 	private class BUTTONS extends JPanel implements ActionListener{
 		private FileLogic FL = new FileLogic();
 		private QuestionBank QB = new QuestionBank();
+		private String SESSION = "myFiles/Session.txt";
+		private String ANSWERS = "myFiles/Answers.txt";
 		int quesNum = 0;
 		int seshNum = 1;
 		
@@ -97,21 +99,22 @@ public class ELIZA_GUI extends JFrame{
 				case NEXT: 
 					quesNum++;
 					if(quesNum < QB.NUM_QUESTIONS){
-						String fileName = "myFiles/Session.txt";
-						FL.appendToFile(fileName, promptLbl.getText());//ques
-						FL.appendToFile(fileName, inputTF.getText());//ans
+						FL.appendToFile(SESSION, promptLbl.getText());//ques
+						FL.appendToFile(SESSION, inputTF.getText());//ans
+						FL.appendToFile(ANSWERS, inputTF.getText());//ans only
 						QUES = QB.getNextQuestion();
 						promptLbl.setText("Session #" + seshNum + " Q" + (quesNum+1) + ". " + QUES);
 					}
 					if(quesNum == QB.NUM_QUESTIONS){
-						String fileName = "myFiles/Session.txt";
-						FL.appendToFile(fileName, promptLbl.getText());
-						FL.appendToFile(fileName, inputTF.getText());
+						FL.appendToFile(SESSION, promptLbl.getText());
+						FL.appendToFile(SESSION, inputTF.getText());
+						FL.appendToFile(ANSWERS, inputTF.getText());
 						startBtn.setText(FINISH);
 						logBtn.setVisible(true);
 						longestBtn.setVisible(true);
 						alphBtn.setVisible(true);	
 					}
+					//inputTF.setText("");
 				break;
 				case FINISH:
 					quesNum = 0;
@@ -122,45 +125,79 @@ public class ELIZA_GUI extends JFrame{
 					logBtn.setVisible(false);
 					longestBtn.setVisible(false);
 					alphBtn.setVisible(false);	
-					//System.exit(0);
-				break;
-				case LOG:
-					String fileName = "myFiles/Session.txt";
-					String fileContent = FL.readFile(fileName);
-					logTA.setVisible(true);
-					logTA.setEditable(false);
-					logTA.append(fileContent);
-				break;
-				case LONGEST:
-					fileName = "myFiles/Session.txt";
-					String theContent = FL.readDelimeterFile(fileName, " ");
-					//System.out.println(theContent);
+					
+					String theContent = FL.readDelimeterFile(ANSWERS, " ");
 					String[]arr = theContent.split("\n");
+					
 					int currMax = 0;
-					String longestStr = null;
+					String longestWord = null;
 					for(int i = 0; i < arr.length; i++){
 						System.out.println(arr[i]);
 						if(arr[i].length() > currMax){
 							currMax = arr[i].length();
-							longestStr = arr[i]; 
-							//System.out.println(longestStr);
-							promptLbl.setText(longestStr);
+							longestWord = arr[i]; 
 						}	
 					}
+					
+					int currMin = 10;
+					String shortestWord = null;
+					for(int i = 0; i < arr.length; i++){
+						if(arr[i].length() < currMin){
+							currMin = arr[i].length();
+							shortestWord = arr[i]; 
+						}	
+					}
+					
+					String analysis = "Wow " + longestWord + " and " + shortestWord + " seem very important to you";
+					FL.appendToFile(SESSION, analysis);
+					//RESET NOT WORKING
+					currMax = 0;
+					longestWord = null;
+					currMin = 10;
+					shortestWord = null;
 				break;
-				case ALPH:
-					fileName = "myFiles/Session.txt";
-					theContent = FL.readDelimeterFile(fileName, " ");
+				case LOG:
+					String fileContent = FL.readFile(SESSION);
+					logTA.setVisible(true);
+					logTA.setEditable(false);
+					logTA.append(fileContent);
+				break;
+				case LONGEST://WORKS @ 2 ROUND MIN
+					theContent = FL.readDelimeterFile(ANSWERS, " ");
 					arr = theContent.split("\n");
 					currMax = 0;
-					longestStr = null;
+					longestWord = null;
 					String[]temp = new String[arr.length];
+					
 					for(int i = 0; i < arr.length; i++){
 						if(arr[i].length() > currMax){
 							currMax = arr[i].length();
-							longestStr = arr[i];
+							longestWord = arr[i];
 							temp[i] = arr[i];
 							//System.out.println(temp[i]);
+						}
+					}
+					
+					logTA.setVisible(true);
+					for(int i = 0; i < temp.length; i++){
+						if(arr[i] != null){
+							logTA.append(temp[i]);//APPENDS ONLY WHEN LONGWORD RECORD BEATEN
+							logTA.append(" ");
+						}
+					}
+				break;
+				case ALPH:
+					theContent = FL.readDelimeterFile(ANSWERS, " ");
+					arr = theContent.split("\n");
+					currMax = 0;
+					longestWord = null;
+					temp = new String[arr.length];
+					
+					for(int i = 0; i < arr.length; i++){
+						if(arr[i].length() > currMax){
+							currMax = arr[i].length();
+							longestWord = arr[i];
+							temp[i] = arr[i];
 						}
 					}
 					logTA.setVisible(true);
@@ -170,7 +207,6 @@ public class ELIZA_GUI extends JFrame{
 							logTA.append(" ");
 						}
 					}
-					
 				break;
 			}
 		}
