@@ -112,21 +112,7 @@ public class ELIZA_GUI extends JFrame{
 						FL.appendToFile(SESSION, promptLbl.getText());
 						FL.appendToFile(SESSION, inputTF.getText());
 						FL.appendToFile(ANSWERS, inputTF.getText());
-						
-						
-						String theContent = FL.readDelimeterFile(ANSWERS, " ");
-						String[]arr = theContent.split("\n");
-						
-						int currMax = 0;
-						String longestWord = null;
-						for(int i = 0; i < arr.length; i++){
-							//System.out.println(arr[i]);
-							if(arr[i].length() > currMax){
-								currMax = arr[i].length();
-								longestWord = arr[i]; 
-							}	
-						}
-						
+						String longestWord = getLongestWord();
 						FL.appendToFile(LONGESTWORDS, longestWord);
 						startBtn.setText(FINISH);
 						logBtn.setVisible(true);
@@ -144,86 +130,92 @@ public class ELIZA_GUI extends JFrame{
 					logBtn.setVisible(false);
 					longestBtn.setVisible(false);
 					alphBtn.setVisible(false);	
+					logTA.setVisible(false);
 					
-					String theContent = FL.readDelimeterFile(ANSWERS, " ");
-					String[]arr = theContent.split("\n");
-					
-					int currMax = 0;
-					String longestWord = null;
-					for(int i = 0; i < arr.length; i++){
-						//System.out.println(arr[i]);
-						if(arr[i].length() > currMax){
-							currMax = arr[i].length();
-							longestWord = arr[i]; 
-						}	
-					}
-					
-					int currMin = 10;
-					String shortestWord = null;
-					for(int i = 0; i < arr.length; i++){
-						if(arr[i].length() < currMin){
-							currMin = arr[i].length();
-							shortestWord = arr[i]; 
-						}	
-					}
+					String longestWord = getLongestWord();
+					String shortestWord = getShortestWord();
 					
 					String analysis = "Wow " + longestWord + " and " + shortestWord + " seem very important to you";
 					FL.appendToFile(SESSION, analysis);
-					//RESET NOT WORKING
+					
+/*
+					RESET NOT WORKING
 					currMax = 0;
 					longestWord = null;
 					currMin = 10;
 					shortestWord = null;
+*/					
 				break;
 				case LOG:
+					logTA.setText("");
 					String fileContent = FL.readFile(SESSION);
 					logTA.setVisible(true);
 					logTA.append(fileContent);
 				break;
 				case LONGEST://WORKS @ 2 ROUND MIN
-					theContent = FL.readDelimeterFile(LONGESTWORDS, " ");
-					arr = theContent.split("\n");
-					currMax = 0;
-					longestWord = null;
-					String[]temp = new String[arr.length];
-					
-					for(int i = 0; i < arr.length; i++){
-						if(arr[i].length() > currMax){
-							currMax = arr[i].length();
-							longestWord = arr[i];
-							temp[i] = arr[i];
-							//System.out.println(temp[i]);
-						}
-					}
+					logTA.setText("");
 					String theLongest = FL.readFile(LONGESTWORDS);
 					logTA.setVisible(true);
 					logTA.append(theLongest);
 				break;
 				case ALPH:
-					theContent = FL.readDelimeterFile(LONGESTWORDS, " ");
-					arr = theContent.split("\n");
-					currMax = 0;
-					longestWord = null;
-					temp = new String[arr.length];
-					
-					for(int i = 0; i < arr.length; i++){
-						if(arr[i].length() > currMax){
-							currMax = arr[i].length();
-							longestWord = arr[i];
-							temp[i] = arr[i];
-							//System.out.println(temp[i]);
-						}
-					}
-					Arrays.sort(temp);
-					//theLongest = FL.readFile(LONGESTWORDS);
+					logTA.setText("");
+					String[] theLongestAlph = getLongestWordsAlph();
 					logTA.setVisible(true);
-					for(int i = 0; i < temp.length; i++){
-						logTA.append(temp[i]);
+					for(int i = 0; i < theLongestAlph.length; i++){
+						logTA.append(theLongestAlph[i] + "\n");
 					}
-					
 				break;
 			}
 		}
+		public String getLongestWord(){
+			String theContent = FL.readDelimeterFile(ANSWERS, " ");
+			String[]arr = theContent.split("\n");		
+			int currMax = 0;
+			String longestWord = null;
+			for(int i = 0; i < arr.length; i++){
+				//System.out.println(arr[i]);
+				if(arr[i].length() > currMax){
+					currMax = arr[i].length();
+					longestWord = arr[i]; 
+				}	
+			}
+			return longestWord;
+		}
+		
+		public String getShortestWord(){
+			String theContent = FL.readDelimeterFile(ANSWERS, " ");
+			String[]arr = theContent.split("\n");
+			int currMin = 10;
+			String shortestWord = null;
+			for(int i = 0; i < arr.length; i++){
+				if(arr[i].length() < currMin){
+					currMin = arr[i].length();
+					shortestWord = arr[i]; 
+				}	
+			}
+			return shortestWord;
+		}
+		
+		public String[] getLongestWordsAlph(){
+			String theContent = FL.readDelimeterFile(LONGESTWORDS, " ");
+			String[]arr = theContent.split("\n");
+			int currMax = 0;
+			String longestWord = null;
+			String[]temp = new String[arr.length];
+			
+			for(int i = 0; i < arr.length; i++){
+				if(arr[i].length() > currMax){
+					currMax = arr[i].length();
+					longestWord = arr[i];
+					temp[i] = arr[i];
+					//System.out.println(temp[i]);
+				}
+			}
+			Arrays.sort(temp);
+			return temp;
+		}
+		
 		
 	}
 }

@@ -10,7 +10,6 @@ public class QuestionBank {
 	
 	public QuestionBank(){
 		questions = new String [NUM_QUESTIONS]; //increase array size if you will add more questions
-		
 	}
 	
 	private void populateQuestionArray(){
@@ -24,11 +23,8 @@ public class QuestionBank {
 		questions[7]= "What did you want to be when you grew up?";
 		questions[8]= "If you could have one wish come true what would it be?";
 		questions[9]= "Which would you prefer — three wishes over five years or one wish right now?";
-		/*add more questions if you like so the experience seems more realistic when randomly selecting
-		remember the number of questions cannot exceed the length of the array*/
 }
 	public String getNextQuestion() {
-		//do stuff in here to get the next question.. randomly from the array...
 		String random = null;
 		for(int i = 0; i < questions.length; i++){
 			populateQuestionArray();
