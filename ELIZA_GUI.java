@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -150,7 +151,7 @@ public class ELIZA_GUI extends JFrame{
 					int currMax = 0;
 					String longestWord = null;
 					for(int i = 0; i < arr.length; i++){
-						System.out.println(arr[i]);
+						//System.out.println(arr[i]);
 						if(arr[i].length() > currMax){
 							currMax = arr[i].length();
 							longestWord = arr[i]; 
@@ -191,16 +192,15 @@ public class ELIZA_GUI extends JFrame{
 							currMax = arr[i].length();
 							longestWord = arr[i];
 							temp[i] = arr[i];
-							System.out.println(temp[i]);
+							//System.out.println(temp[i]);
 						}
 					}
 					String theLongest = FL.readFile(LONGESTWORDS);
 					logTA.setVisible(true);
 					logTA.append(theLongest);
-					//
 				break;
 				case ALPH:
-					theContent = FL.readDelimeterFile(ANSWERS, " ");
+					theContent = FL.readDelimeterFile(LONGESTWORDS, " ");
 					arr = theContent.split("\n");
 					currMax = 0;
 					longestWord = null;
@@ -211,15 +211,16 @@ public class ELIZA_GUI extends JFrame{
 							currMax = arr[i].length();
 							longestWord = arr[i];
 							temp[i] = arr[i];
+							//System.out.println(temp[i]);
 						}
 					}
+					Arrays.sort(temp);
+					//theLongest = FL.readFile(LONGESTWORDS);
 					logTA.setVisible(true);
 					for(int i = 0; i < temp.length; i++){
-						if(arr[i] != null){
-							logTA.append(temp[i]);
-							logTA.append(" ");
-						}
+						logTA.append(temp[i]);
 					}
+					
 				break;
 			}
 		}
