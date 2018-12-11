@@ -37,6 +37,7 @@ public class ELIZA_GUI extends JFrame{
 		
 		logTA = new JTextArea(50, 500);
 		logTA.setVisible(false);
+		logTA.setEditable(false);
 		jpMain.add(logTA, BorderLayout.NORTH);
 		
 		setSize(500, 500);
@@ -50,6 +51,7 @@ public class ELIZA_GUI extends JFrame{
 		private QuestionBank QB = new QuestionBank();
 		private String SESSION = "myFiles/Session.txt";
 		private String ANSWERS = "myFiles/Answers.txt";
+		private String LONGESTWORDS = "myFiles/LongestWords.txt";
 		int quesNum = 0;
 		int seshNum = 1;
 		
@@ -109,6 +111,22 @@ public class ELIZA_GUI extends JFrame{
 						FL.appendToFile(SESSION, promptLbl.getText());
 						FL.appendToFile(SESSION, inputTF.getText());
 						FL.appendToFile(ANSWERS, inputTF.getText());
+						
+						
+						String theContent = FL.readDelimeterFile(ANSWERS, " ");
+						String[]arr = theContent.split("\n");
+						
+						int currMax = 0;
+						String longestWord = null;
+						for(int i = 0; i < arr.length; i++){
+							//System.out.println(arr[i]);
+							if(arr[i].length() > currMax){
+								currMax = arr[i].length();
+								longestWord = arr[i]; 
+							}	
+						}
+						
+						FL.appendToFile(LONGESTWORDS, longestWord);
 						startBtn.setText(FINISH);
 						logBtn.setVisible(true);
 						longestBtn.setVisible(true);
@@ -159,11 +177,10 @@ public class ELIZA_GUI extends JFrame{
 				case LOG:
 					String fileContent = FL.readFile(SESSION);
 					logTA.setVisible(true);
-					logTA.setEditable(false);
 					logTA.append(fileContent);
 				break;
 				case LONGEST://WORKS @ 2 ROUND MIN
-					theContent = FL.readDelimeterFile(ANSWERS, " ");
+					theContent = FL.readDelimeterFile(LONGESTWORDS, " ");
 					arr = theContent.split("\n");
 					currMax = 0;
 					longestWord = null;
@@ -174,17 +191,13 @@ public class ELIZA_GUI extends JFrame{
 							currMax = arr[i].length();
 							longestWord = arr[i];
 							temp[i] = arr[i];
-							//System.out.println(temp[i]);
+							System.out.println(temp[i]);
 						}
 					}
-					
+					String theLongest = FL.readFile(LONGESTWORDS);
 					logTA.setVisible(true);
-					for(int i = 0; i < temp.length; i++){
-						if(arr[i] != null){
-							logTA.append(temp[i]);//APPENDS ONLY WHEN LONGWORD RECORD BEATEN
-							logTA.append(" ");
-						}
-					}
+					logTA.append(theLongest);
+					//
 				break;
 				case ALPH:
 					theContent = FL.readDelimeterFile(ANSWERS, " ");
